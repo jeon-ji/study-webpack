@@ -1,0 +1,27 @@
+{
+  "name": "study-webpack",
+  "version": "1.0.0",
+  "description": "Webpack, Babel 설정 방법 공부",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeon-ji/study-webpack.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jeon-ji/study-webpack/issues"
+  },
+  "homepage": "https://github.com/jeon-ji/study-webpack#readme",
+  "dependencies": {
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.77.0",
+    "webpack-cli": "^5.0.1"
+  }
+}

@@ -1,4 +1,9 @@
 const path = require('path');
+const webpack = require('webpack');
+const childProcess = require('child_process');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin'); // default export 되어있지 않음
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   mode: 'development',
@@ -16,7 +21,13 @@ module.exports = {
         // style-loader: 처리된 javascript 문자열로 되어있는 코드를 HTML에 적용
         // css-loader: css 파일을 javascript 모듈처럼 사용할 수 있도록 처리
         // use: 뒤에서부터 적용
-        use: ['style-loader', 'css-loader']
+        use: [
+          // 운영 환경에서 css 파일 추출하도록 조건 추가
+          process.env.NODE_ENV === 'production'
+          ? MiniCssExtractPlugin.loader
+          :'style-loader',
+          'css-loader'
+        ]
       },
       // webpack 5에서 추가된 모듈 유형(asset, source, resource, inline)
       {
@@ -41,5 +52,37 @@ module.exports = {
       //   }
       // },
     ]
-  }
+  },
+  plugins: [
+    // 번들링된 결과물 상단에 빌드 정보 추가 가능
+    new webpack.BannerPlugin({
+      banner: `
+        Build Date: ${new Date().toLocaleString()}
+        Commit Version: ${new childProcess.execSync('git rev-parse --short HEAD')}
+        Author: ${new childProcess.execSync('git config user.name')}
+      `
+    }),
+    // 빌드 과정에 html도 포함하기 때문에 보다 의존적이지 않은 코드로 관리 가능
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+      // 변수에 데이터를 주입시켜 동적으로 HTML 코드를 생성
+      templateParameters: {
+        env: process.env.NODE_ENV === 'development' ? '(개발용)' : ''
+      },
+      // 운영 환경에서 파일을 압축하고 불필요한 주석을 제거
+      // minify: process.env.NODE_ENV === 'production' && {
+      //   collapseWhitespace: true, // 빈칸 제거
+      //   removeComments: true, // 주석 제거
+      // }
+    }),
+    // 빌드 이전 결과물을 제거
+    new CleanWebpackPlugin(),
+    // 번들된 javascript 코드에서 css 파일만 따로 추출하여 파일 생성
+    // 운영 환경에서 css 파일을 따로 추출
+    // loader 설정 필요
+    ...(process.env.NODE_ENV === 'production'
+      ? [new MiniCssExtractPlugin({ filename: '[name].css' })]
+      : []
+    )
+  ]
 }

@@ -24,8 +24,8 @@ module.exports = {
         use: [
           // 운영 환경에서 css 파일 추출하도록 조건 추가
           process.env.NODE_ENV === 'production'
-          ? MiniCssExtractPlugin.loader
-          :'style-loader',
+          ? MiniCssExtractPlugin.loader   // 운영 환경
+          :'style-loader',    // 개발 환경
           'css-loader'
         ]
       },
@@ -51,6 +51,11 @@ module.exports = {
       //     limit: 10000,  // limit 미만은 javascript 문자열, limit 이상은 파일 형태로 로더
       //   }
       // },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,  // node_modules 파일 제거
+        loader: "babel-loader",
+      },
     ]
   },
   plugins: [
@@ -70,10 +75,10 @@ module.exports = {
         env: process.env.NODE_ENV === 'development' ? '(개발용)' : ''
       },
       // 운영 환경에서 파일을 압축하고 불필요한 주석을 제거
-      // minify: process.env.NODE_ENV === 'production' && {
-      //   collapseWhitespace: true, // 빈칸 제거
-      //   removeComments: true, // 주석 제거
-      // }
+      minify: process.env.NODE_ENV === 'production' ? {
+        collapseWhitespace: true, // 빈칸 제거
+        removeComments: true, // 주석 제거
+      }: null
     }),
     // 빌드 이전 결과물을 제거
     new CleanWebpackPlugin(),

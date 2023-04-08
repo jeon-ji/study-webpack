@@ -17,7 +17,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/,
+        test: /\.(scss|css)$/,
         // style-loader: 처리된 javascript 문자열로 되어있는 코드를 HTML에 적용
         // css-loader: css 파일을 javascript 모듈처럼 사용할 수 있도록 처리
         // use: 뒤에서부터 적용
@@ -26,7 +26,8 @@ module.exports = {
           process.env.NODE_ENV === 'production'
           ? MiniCssExtractPlugin.loader   // 운영 환경
           :'style-loader',    // 개발 환경
-          'css-loader'
+          'css-loader',
+          'sass-loader'
         ]
       },
       // webpack 5에서 추가된 모듈 유형(asset, source, resource, inline)

@@ -20,9 +20,7 @@ module.exports = {
     // host: "dev.domain.com",   // 개발환경에서 도메인 맞춰야할 때 사용
     overlay: true,    // 빌드시 에러나 경고를 브라우저 화면에 표시
     // port: 8081,   // 개발 서버 포트 번호를 설정(기본 8080)
-    
-    // stats option ==> webpack5에서 없어짐. 사용 방법 찾아보기
-    // stats: "errors-only",   // 메시지 수준('none', 'errors-only', 'minimal', 'normal', 'verbose')
+    // stats option ==> webpack5에서 webpack-dev-middleware로 변경됨.
     // historyApiFallback: true,   // 히스토리 API를 사용하는 SPA 개발시 설정(404 발생 시 index.html로 리다이렉트)
   },
   module: {

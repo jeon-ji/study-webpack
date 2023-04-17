@@ -20,7 +20,8 @@ module.exports = {
     },
     client: {
       overlay: true,    // 빌드시 에러나 경고를 브라우저 화면에 표시
-    }
+    },
+    hot: true
     // contentBase: path.join(__dirname, "dist"),    // 정적파일을 제공할 경로(기본 웹팩 아웃풋)
     // publicPath: "/",    // 브라우저를 통해 접근하는 경로(기본 '/')
     // host: "dev.domain.com",   // 개발환경에서 도메인 맞춰야할 때 사용

@@ -4,9 +4,12 @@ const childProcess = require('child_process');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin'); // default export 되어있지 않음
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
+const mode = process.env.NODE_ENV || "development" // 기본값을 development로 설정
 module.exports = {
-  mode: 'development',
+  mode,
   entry: {  // 웹팩에서 웹 자원을 변환하기 위해 필요한 최초 진입점이자 자바스크립트 파일 경로
     main: './src/app.js'
   },
@@ -104,6 +107,39 @@ module.exports = {
     ...(process.env.NODE_ENV === 'production'
       ? [new MiniCssExtractPlugin({ filename: '[name].css' })]
       : []
-    )
-  ]
+    ),
+    new CopyPlugin({
+      patterns: [
+        // 웹팩 아웃풋 폴더에 옮기고 로딩해야하기 때문에 파일을 복사
+        { from: "./node_modules/axios/dist/axios.min.js", to: "./axios.min.js" },
+      ],
+      options: {
+        concurrency: 100,
+      },
+    }),
+  ],
+  // 최적화 설정
+  optimization: {
+    // 빌드 결과물중 css 파일을 압축
+    // minimizer: mode === "production" ? [new OptimizeCSSAssetsPlugin()] : [],
+    minimizer:
+      mode === "production"
+        ? [
+            new TerserPlugin({
+              terserOptions: {
+                compress: {
+                  drop_console: true, // 콘솔 로그 제거
+                },
+              },
+            }),
+          ]
+        : [],
+    // splitChunks: {
+    //   chunks: "all",
+    // },
+  },
+  // 빌드 프로세스에서 제외
+  externals: {
+    axios: "axios",
+  },
 }
